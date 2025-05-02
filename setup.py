@@ -1,0 +1,33 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="traffic-light-cv",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "numpy>=1.19.5",
+        "opencv-python>=4.5.0",
+        "torch>=1.8.0",
+        "torchvision>=0.9.0",
+        "matplotlib>=3.3.0",
+        "pandas>=1.2.0",
+        "scipy>=1.6.0",
+        "scikit-learn>=0.24.0",
+        "scikit-image>=0.18.0",
+        "tqdm>=4.56.0",
+        "Pillow>=8.1.0",
+        "pyyaml>=5.4.0",
+        "ultralytics>=8.0.0",
+        "albumentations>=1.0.0",
+        "pykalman>=0.9.5",
+        "geopy>=2.1.0",
+        "rtree>=0.9.7",
+        "shapely>=1.7.1",
+        "pyproj>=3.0.0",
+    ],
+    author="Developer",
+    author_email="dev@example.com",
+    description="A computer vision system for traffic light and camera detection",
+    keywords="computer vision, traffic lights, object detection",
+    python_requires=">=3.8",
+)

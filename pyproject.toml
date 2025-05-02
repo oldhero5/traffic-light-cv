@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "traffic-light-cv"
+version = "0.1.0"
+description = "A computer vision system for detecting and analyzing traffic lights and cameras from dashcam footage"
+readme = "README.md"
+authors = [
+    {name = "oldhero5", email = "oldhero5@example.com"},
+]
+license = {text = "MIT License with Attribution Requirement"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+keywords = ["computer vision", "traffic lights", "object detection", "dashcam"]
+dependencies = [
+    "numpy>=1.19.5",
+    "opencv-python>=4.5.0",
+    "torch>=1.8.0",
+    "torchvision>=0.9.0",
+    "matplotlib>=3.3.0",
+    "pandas>=1.2.0",
+    "scipy>=1.6.0",
+    "scikit-learn>=0.24.0",
+    "scikit-image>=0.18.0",
+    "tqdm>=4.56.0",
+    "Pillow>=8.1.0",
+    "pyyaml>=5.4.0",
+    "ultralytics>=8.0.0",
+    "albumentations>=1.0.0",
+    "pykalman>=0.9.5",
+    "geopy>=2.1.0",
+    "rtree>=0.9.7",
+    "shapely>=1.7.1",
+    "pyproj>=3.0.0",
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/oldhero5/traffic-light-cv"
+"Bug Tracker" = "https://github.com/oldhero5/traffic-light-cv/issues"
+
+[project.scripts]
+traffic-light-cv = "src.main:main"
+traffic-light-test = "run_test_mode:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["src", "src.detection", "src.localization", "src.mapping", "src.relevance", "src.utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310"]

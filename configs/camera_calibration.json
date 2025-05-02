@@ -1,0 +1,22 @@
+{
+  "camera_matrix": [
+    [1000.0, 0.0, 960.0],
+    [0.0, 1000.0, 540.0],
+    [0.0, 0.0, 1.0]
+  ],
+  "dist_coeffs": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "reprojection_error": 0.0,
+  "image_count": 0,
+  "checkerboard_size": [9, 6],
+  "square_size": 0.025,
+  "image_width": 1920,
+  "image_height": 1080,
+  "fov_horizontal": 60.0,
+  "fov_vertical": 35.0
+}

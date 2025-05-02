@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+.github
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Documentation and notes
+LICENSE
+*.md
+docs/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+tests/
+
+# Jupyter Notebooks
+notebooks/
+.ipynb_checkpoints
+
+# Custom data files
+data/raw/
+data/processed/
+*.mp4
+*.avi
+*.mov
+*.png
+*.jpg
+*.jpeg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

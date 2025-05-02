@@ -1,0 +1,15 @@
+# Dataset configuration
+path: data
+train: data/train
+val: data/val
+test: data/test
+nc: 7  # Number of classes
+names: [
+  "traffic_light_unknown",
+  "traffic_light_red",
+  "traffic_light_yellow",
+  "traffic_light_green",
+  "traffic_camera",
+  "speed_camera",
+  "red_light_camera"
+]

@@ -1,0 +1,66 @@
+# Main configuration file for Traffic Light Perception System
+
+# System settings
+system:
+  debug: false
+  display: true
+  skip_frames: 2  # Skip every n frames
+  use_gpu: true
+  device: "cuda"  # "cuda" or "cpu"
+  output_dir: "output"
+  persistence_file: "output/objects.json"
+
+# Detection settings
+detection:
+  model_path: "models/traffic_detector.pt"
+  confidence_threshold: 0.25
+  nms_threshold: 0.45
+  input_size: 640
+
+# Camera settings
+camera:
+  calibration_file: "configs/camera_calibration.json"
+  fov_horizontal: 60.0  # degrees
+  fov_vertical: 35.0  # degrees
+
+# Localization settings
+localization:
+  use_kalman: true
+  distance_estimation_method: "size"  # "size", "depth", or "combined"
+  known_dimensions:
+    traffic_light_unknown: [0.3, 0.8]  # width, height in meters
+    traffic_light_red: [0.3, 0.8]
+    traffic_light_yellow: [0.3, 0.8]
+    traffic_light_green: [0.3, 0.8]
+    traffic_camera: [0.4, 0.4]
+    speed_camera: [0.4, 0.4]
+    red_light_camera: [0.4, 0.4]
+
+# Relevance settings
+relevance:
+  min_relevance: 0.3
+  state_modifiers:
+    red: 1.5
+    yellow: 1.2
+    green: 1.0
+    unknown: 1.0
+
+# Mapping settings
+mapping:
+  distance_threshold: 10.0  # meters
+
+# Visualization settings
+visualization:
+  show_distance: true
+  show_relevance: true
+  show_state: true
+  font_scale: 0.5
+  line_thickness: 2
+  colors:
+    traffic_light_unknown: [128, 128, 128]  # BGR
+    traffic_light_red: [0, 0, 255]
+    traffic_light_yellow: [0, 255, 255]
+    traffic_light_green: [0, 255, 0]
+    traffic_camera: [255, 0, 0]
+    speed_camera: [255, 0, 255]
+    red_light_camera: [255, 128, 0]
