@@ -1,8 +1,8 @@
 # Dataset configuration
-path: data
-train: data/train
-val: data/val
-test: data/test
+path: ./data  # Changed from 'data' to './data' for relative path
+train: ./data/train  # Changed from 'data/train' to './data/train'
+val: ./data/val  # Changed from 'data/val' to './data/val'
+test: ./data/test  # Changed from 'data/test' to './data/test'
 nc: 7  # Number of classes
 names: [
   "traffic_light_unknown",

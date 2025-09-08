@@ -3,6 +3,8 @@ Constants used throughout the system.
 """
 
 # Detection thresholds
+from __future__ import annotations
+
 CONFIDENCE_THRESHOLD = 0.25
 NMS_THRESHOLD = 0.45
 
@@ -44,11 +46,7 @@ COLORS = {
 }
 
 # Default camera parameters
-DEFAULT_CAMERA_MATRIX = [
-    [1000, 0, 960],
-    [0, 1000, 540],
-    [0, 0, 1]
-]
+DEFAULT_CAMERA_MATRIX = [[1000, 0, 960], [0, 1000, 540], [0, 0, 1]]
 
 DEFAULT_DISTORTION_COEFFICIENTS = [0, 0, 0, 0, 0]
 

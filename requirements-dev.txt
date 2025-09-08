@@ -1,0 +1,57 @@
+# M1 Development & Profiling Dependencies
+-r requirements-m1.txt
+
+# M1-Specific Profiling Tools
+py-spy>=0.3.14                 # CPU profiling
+memory-profiler>=0.61.0        # Memory profiling
+pympler>=0.9                   # Memory analysis
+objgraph>=3.6.0                # Object reference tracking
+
+# Performance Analysis
+cProfile                       # Built-in profiler
+snakeviz>=2.2.0                # cProfile visualization
+py-heat>=0.3.1                 # Heatmap profiling
+
+# Testing & Quality Assurance
+pytest>=7.4.0                  # Testing framework
+pytest-benchmark>=4.0.0        # Performance benchmarks
+pytest-cov>=4.1.0              # Coverage reporting
+pytest-xdist>=3.3.1            # Parallel testing
+pytest-mock>=3.11.1            # Mocking utilities
+hypothesis>=6.82.0             # Property-based testing
+
+# Code Quality
+black>=23.7.0                  # Code formatting
+ruff>=0.0.280                   # Fast linting
+mypy>=1.5.0                     # Type checking
+pre-commit>=3.3.3              # Git hooks
+bandit>=1.7.5                  # Security linting
+
+# Documentation
+sphinx>=7.1.2                  # Documentation generation
+sphinx-rtd-theme>=1.3.0        # Read the Docs theme
+myst-parser>=2.0.0             # Markdown support for Sphinx
+
+# Jupyter & Interactive Development
+jupyterlab>=4.0.5              # Interactive development
+ipywidgets>=8.1.0              # Interactive widgets
+nbconvert>=7.7.3               # Notebook conversion
+
+# Model Development & Experimentation
+tensorboard>=2.14.0            # Training visualization
+wandb>=0.15.8                  # Experiment tracking
+mlflow>=2.5.0                  # ML lifecycle management
+
+# Data Science & Analysis
+seaborn>=0.12.2                # Statistical visualization
+plotly>=5.15.0                 # Interactive plots
+dash>=2.12.1                   # Web dashboards
+
+# Hardware Monitoring (macOS Specific)
+psutil>=5.9.5                  # System monitoring
+GPUtil>=1.4.0                  # GPU monitoring (if applicable)
+
+# Utilities
+rich>=13.5.2                   # Rich terminal output
+click>=8.1.7                   # CLI framework
+loguru>=0.7.0                  # Advanced logging
