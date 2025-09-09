@@ -1,262 +1,350 @@
-# GitHub Issues - M1 MacBook Pro Optimized
+# GitHub Issues - Mobile Traffic Awareness App (M1 Optimized)
 
-## Epic 1: Core Detection Improvements (M1 Optimized)
+## Epic 1: Mobile Infrastructure Foundation
 
-### Issue #1: Implement Temporal Consistency with DeepSORT on M1
-**Title:** Add DeepSORT tracking with Metal Performance Shaders acceleration
-**Labels:** `enhancement`, `detection`, `priority-high`, `m1-optimization`
+### Issue #1: Mobile GPS Integration & Real-Time Tracking
+**Title:** Implement real-time GPS tracking for dashcam video with embedded location data
+**Labels:** `enhancement`, `mobile`, `priority-high`, `gps-integration`
 **Description:**
 ```markdown
 ## Overview
-Implement DeepSORT tracking optimized for Apple Silicon using Metal Performance Shaders.
+Create GPS tracking system that integrates embedded GPS data from dashcam MP4 videos and provides real-time location awareness for traffic intersections.
 
 ## Acceptance Criteria
-- [ ] Integrate deep_sort_realtime with MPS backend
-- [ ] Track objects across minimum 30 frames
-- [ ] Achieve >60 FPS on M1 MacBook Pro
-- [ ] Utilize Apple Neural Engine when available
-- [ ] Add tracking confidence scores
+- [ ] Parse embedded GPS data from dashcam MP4 files
+- [ ] Implement real-time GPS coordinate tracking
+- [ ] Calculate vehicle speed and heading from GPS data
+- [ ] Store GPS history for route prediction
+- [ ] Integrate with existing GPS reader functionality
+- [ ] Support multiple GPS data formats (NMEA, CSV, JSON)
 
 ## Technical Requirements
-- Use deep_sort_realtime==1.3.2
-- Implement MPS acceleration for similarity computation
-- Use CoreML for feature extraction
-- Leverage unified memory architecture
+- Enhance existing `src/utils/gps_reader.py`
+- Create new `src/mobile/gps_tracker.py`
+- Support MP4 metadata GPS extraction
+- Implement Kalman filtering for GPS smoothing
+- Use M1 optimizations for real-time processing
 
-## Files to Modify
-- `src/detection/tracker_m1.py` (new)
-- `src/detection/detector.py`
-- `src/utils/metal_utils.py` (new)
-- `requirements-m1.txt`
+## Files to Create/Modify
+- `src/mobile/gps_tracker.py` (new)
+- `src/mobile/__init__.py` (new)
+- `src/utils/gps_reader.py` (enhance)
+- `src/utils/video_reader.py` (enhance for GPS extraction)
 
 ## M1-Specific Optimizations
-- Use torch.backends.mps for GPU acceleration
-- Implement zero-copy frame transfer
-- Utilize Apple Neural Engine via CoreML
+- Use MPS for coordinate calculations
+- Leverage unified memory for GPS data storage
+- Target <1ms GPS processing latency
+
+## Testing
+- Test with real dashcam MP4 files containing GPS data
+- Validate accuracy within 3 meters
+- Ensure 30+ FPS processing on M1 MacBook Pro
 ```
 
-### Issue #2: CoreML-based Traffic Light State Classifier
-**Title:** Implement traffic light state classifier using CoreML
-**Labels:** `enhancement`, `detection`, `priority-high`, `apple-silicon`
+### Issue #2: Traffic Light State Detection & Timing Prediction
+**Title:** Implement traffic light state detection with timing prediction for mobile awareness
+**Labels:** `enhancement`, `detection`, `priority-high`, `prediction`, `mobile`
 **Description:**
 ```markdown
 ## Overview
-Replace PyTorch classifier with CoreML model optimized for M1 Neural Engine.
+Enhance traffic light detection to predict state changes and timing patterns for proactive mobile alerts.
 
 ## Acceptance Criteria
-- [ ] Convert ResNet18 to CoreML format
-- [ ] Achieve <5ms inference on M1
-- [ ] Support batch processing on Neural Engine
-- [ ] 98% accuracy on state classification
-- [ ] Support red, yellow, green, off, flashing states
+- [ ] Detect traffic light states (red, yellow, green) with >95% accuracy
+- [ ] Predict traffic light timing patterns and cycles
+- [ ] Implement countdown timer for next state change
+- [ ] Learn intersection-specific timing patterns
+- [ ] Provide "red light ahead" warnings based on speed/distance
+- [ ] Support varying cycle times (day/night, rush hour, etc.)
 
 ## Implementation
-- Create `src/detection/coreml_classifier.py`
-- Use coremltools for model conversion
-- Implement Vision framework integration
-- Add Metal compute shader for preprocessing
+- Enhance existing `src/detection/traffic_light_detector.py`
+- Create new `src/mobile/traffic_light_predictor.py`
+- Implement pattern learning with moving averages
+- Use CoreML for optimized state classification
+- Add temporal consistency validation
+
+## Key Features
+- Cycle detection (typically 60-120s total cycle)
+- Pattern learning from historical data
+- Time-of-day and day-of-week adjustments
+- Speed-based arrival time calculation
+- Countdown predictions with confidence scores
+
+## Files to Create/Modify
+- `src/mobile/traffic_light_predictor.py` (new)
+- `src/detection/traffic_light_detector.py` (enhance)
+- `src/mobile/timing_database.py` (new)
 
 ## M1 Benchmarks Target
-- Inference: <5ms per crop
-- Memory usage: <100MB
-- Power efficiency: <5W during inference
+- State detection: <5ms per frame
+- Pattern analysis: <1ms per update
+- >95% prediction accuracy
+- Neural Engine utilization >80%
 ```
 
-### Issue #3: Metal-Accelerated Preprocessing Pipeline
-**Title:** Implement Metal Performance Shaders preprocessing
-**Labels:** `enhancement`, `preprocessing`, `priority-medium`, `metal`
+### Issue #3: Camera Detection & FOV Prediction System
+**Title:** Implement intersection camera detection and field-of-view mapping
+**Labels:** `enhancement`, `camera-detection`, `priority-high`, `fov-mapping`
 **Description:**
 ```markdown
 ## Overview
-Create Metal-accelerated image preprocessing pipeline for M1.
+Detect traffic cameras at intersections and predict their field-of-view to alert users when they're being monitored.
 
 ## Acceptance Criteria
-- [ ] Implement Metal shaders for image enhancement
-- [ ] Support HDR tone mapping
-- [ ] Real-time dehazing and rain removal
-- [ ] Maintain 120+ FPS on 4K video
+- [ ] Detect traffic/red-light cameras in dashcam footage
+- [ ] Estimate camera position and mounting angle
+- [ ] Calculate camera field-of-view (FOV) coverage area
+- [ ] Map FOV onto road surface coordinates
+- [ ] Determine if vehicle is within camera FOV
+- [ ] Provide real-time "camera monitoring" alerts
 
-## Metal Shaders to Implement
-- `shaders/weather_enhancement.metal`
-- `shaders/hdr_processing.metal`
-- `shaders/motion_deblur.metal`
+## Key Features
+- Camera type classification (red-light, speed, surveillance)
+- FOV calculation based on camera mounting (typically 15-30° down, 30-90° horizontal)
+- Ray-casting for FOV projection onto road
+- Distance estimation using object localization
+- Integration with GPS for world coordinates
 
-## Performance Targets (M1 Pro/Max)
-- 4K @ 60 FPS processing
-- <16ms latency
-- Utilize ProRes hardware decoder
+## Technical Implementation
+- Use existing object detection for camera identification
+- Implement geometric FOV calculation
+- Create intersection database for camera locations
+- Real-time FOV intersection checking
+
+## Files to Create/Modify
+- `src/mobile/camera_detector.py` (new)
+- `src/mobile/fov_predictor.py` (new)
+- `src/mobile/intersection_database.py` (new)
+- `src/detection/detector.py` (enhance for cameras)
+
+## M1 Performance Targets
+- Camera detection: <10ms per frame
+- FOV calculation: <5ms per camera
+- Real-time intersection checking: <1ms
+- Memory usage: <50MB for intersection database
 ```
 
-## Epic 2: M1-Specific Performance Optimization
+## Epic 2: Real-Time Processing & Alerts
 
-### Issue #4: Unified Memory Architecture Optimization
-**Title:** Optimize for M1 unified memory architecture
-**Labels:** `optimization`, `performance`, `m1-specific`
+### Issue #4: Intersection Awareness & Alert System
+**Title:** Implement real-time intersection awareness with proactive alerts
+**Labels:** `feature`, `alerts`, `priority-high`, `intersection-awareness`
 **Description:**
 ```markdown
 ## Overview
-Leverage M1's unified memory to eliminate CPU-GPU transfers.
+Create comprehensive intersection awareness system that provides real-time alerts for traffic violations and camera monitoring.
 
 ## Acceptance Criteria
-- [ ] Zero-copy frame processing pipeline
-- [ ] Shared memory between CoreML and Metal
-- [ ] Reduce memory footprint by 50%
-- [ ] Eliminate redundant data copies
+- [ ] Detect when vehicle enters intersection
+- [ ] Alert when approaching red light at unsafe speed
+- [ ] Notify when in camera FOV during red light violation
+- [ ] Provide "Camera monitoring intersection" warnings
+- [ ] Calculate collision risk based on speed/distance
+- [ ] Support audio, visual, and haptic feedback
+- [ ] Implement configurable alert thresholds
 
-## Implementation
-- Use CVPixelBuffer for frame management
-- Implement IOSurface for zero-copy sharing
-- Create memory pool for buffer reuse
-- Profile with Instruments
+## Key Alert Types
+- "Red light ahead" - speed-based warnings
+- "Camera detected" - when traffic camera identified
+- "You're being recorded" - when in camera FOV with red light
+- "Slow down" - when approaching red too fast
+- "Intersection ahead" - proactive warnings
+
+## Technical Implementation
+- Integrate GPS, traffic light predictor, and camera detector
+- Real-time risk assessment algorithms
+- Multi-modal alert delivery system
+- User-configurable sensitivity settings
+
+## Files to Create/Modify
+- `src/mobile/intersection_alerts.py` (new)
+- `src/mobile/alert_manager.py` (new)
+- `src/mobile/risk_calculator.py` (new)
+
+## M1 Performance Targets
+- Alert processing: <5ms end-to-end
+- Risk calculation: <1ms per update
+- Support 30+ FPS real-time operation
+- <100MB memory usage for alert system
 ```
 
-### Issue #5: Apple ProRes Hardware Acceleration
-**Title:** Integrate ProRes decoder for dashcam footage
-**Labels:** `feature`, `performance`, `video-processing`
+### Issue #5: Mobile-Optimized Video Processing Pipeline
+**Title:** Optimize dashcam MP4 processing for mobile deployment
+**Labels:** `performance`, `video-processing`, `mobile`, `m1-optimization`
 **Description:**
 ```markdown
 ## Overview
-Utilize M1's dedicated ProRes decoder for efficient video processing.
+Create optimized video processing pipeline for dashcam MP4 files with embedded GPS data, targeting mobile deployment.
 
 ## Acceptance Criteria
-- [ ] Support ProRes 422/4444 input
-- [ ] Hardware-accelerated decoding
-- [ ] Support for 8K ProRes playback
-- [ ] Integration with Vision framework
+- [ ] Support common dashcam formats (H.264, H.265)
+- [ ] Extract embedded GPS metadata from MP4 files
+- [ ] Maintain 30+ FPS processing on M1 MacBook Pro
+- [ ] Optimize memory usage for long video files
+- [ ] Support both file and real-time processing
+- [ ] Implement frame skipping for performance
 
-## Implementation
-- Create `src/video/prores_reader.py`
-- Use VideoToolbox framework
-- Implement AVFoundation pipeline
+## Key Features
+- Hardware-accelerated video decoding using VideoToolbox
+- Efficient frame extraction and processing
+- GPS metadata synchronization with video frames
+- Memory-efficient streaming for large files
+- Batch processing optimization
+
+## Technical Implementation
+- Enhance existing `src/utils/video_reader.py`
+- Create `src/mobile/video_processor.py`
+- Use AVFoundation for hardware acceleration
+- Implement unified memory usage patterns
+
+## Files to Create/Modify
+- `src/mobile/video_processor.py` (new)
+- `src/utils/video_reader.py` (enhance)
+- `src/mobile/frame_processor.py` (new)
+
+## M1 Performance Targets
+- Video processing: 30+ FPS sustained
+- Memory usage: <500MB for 4K video
+- GPU utilization: <70% average
+- Power consumption: <8W during processing
 ```
 
-## Epic 3: Development Tools Integration
+## Epic 3: iOS Mobile Application
 
-### Issue #6: Xcode Instruments Profiling Integration
-**Title:** Add comprehensive Instruments profiling
-**Labels:** `tooling`, `performance`, `debugging`
+### Issue #6: iOS App Foundation & Architecture
+**Title:** Create iOS app foundation with CoreML integration
+**Labels:** `ios`, `mobile-app`, `priority-high`, `foundation`
 **Description:**
 ```markdown
 ## Overview
-Integrate Xcode Instruments for detailed performance analysis.
+Build the foundation iOS app structure with SwiftUI interface and CoreML integration for traffic awareness.
 
 ## Acceptance Criteria
-- [ ] Custom Instruments templates
-- [ ] Metal System Trace integration
-- [ ] Neural Engine profiling
-- [ ] Memory leak detection
-- [ ] Power consumption tracking
+- [ ] Create iOS app project with SwiftUI
+- [ ] Integrate CoreML for on-device inference
+- [ ] Setup AVFoundation for video processing
+- [ ] Implement CoreLocation for GPS tracking
+- [ ] Create basic dashboard interface
+- [ ] Support both iPhone and iPad
 
-## Deliverables
-- instruments/TrafficVision.tracetemplate
-- Profiling automation scripts
-- Performance regression tests
+## Key Features
+- SwiftUI interface with AR overlays
+- Real-time dashcam video display
+- CoreML model integration
+- GPS location tracking
+- Alert notification system
+
+## Technical Stack
+- SwiftUI for UI framework
+- CoreML for machine learning
+- AVFoundation for video processing
+- CoreLocation for GPS
+- Metal for rendering overlays
+
+## Files to Create
+- `ios/TrafficVisionApp/` (new iOS project)
+- `ios/TrafficVisionApp/ContentView.swift`
+- `ios/TrafficVisionApp/VideoProcessor.swift`
+- `ios/TrafficVisionApp/LocationManager.swift`
+- `ios/TrafficVisionApp/AlertManager.swift`
+
+## iOS Performance Targets
+- 30+ FPS video processing
+- <100ms alert response time
+- <200MB memory usage
+- Support iPhone 12+ and iPad
 ```
 
-### Issue #7: Create ML Create Integration
-**Title:** Implement Create ML model training pipeline
-**Labels:** `ml-ops`, `training`, `apple-tools`
+### Issue #7: Mobile UI & Real-Time Alert Interface
+**Title:** Implement mobile dashboard with AR overlays and alert system
+**Labels:** `ui`, `alerts`, `ar-overlays`, `mobile-interface`
 **Description:**
 ```markdown
 ## Overview
-Use Create ML for on-device model training and fine-tuning.
+Create comprehensive mobile interface with real-time dashcam display, AR overlays, and multi-modal alert system.
 
 ## Acceptance Criteria
-- [ ] Create ML project setup
-- [ ] On-device training capability
-- [ ] Model A/B testing framework
-- [ ] Automatic model updates
+- [ ] Live dashcam video feed display
+- [ ] AR overlays for traffic lights and cameras
+- [ ] Visual alert notifications
+- [ ] Audio alert system
+- [ ] Haptic feedback integration
+- [ ] Settings and configuration screens
+- [ ] Dark/light mode support
 
-## Implementation
-- Create `training/createml/`
-- Implement transfer learning
-- Add model versioning
+## Key Interface Elements
+- Main dashboard with video feed
+- Traffic light state indicators with countdown timers
+- Camera FOV visualization overlays
+- Speed and GPS information display
+- Alert notification banners
+- Settings screen for alert preferences
+
+## Alert Types
+- Visual: On-screen notifications and overlays
+- Audio: Voice alerts and warning sounds
+- Haptic: Vibration patterns for different alert types
+
+## Files to Create/Modify
+- `ios/TrafficVisionApp/Views/DashboardView.swift`
+- `ios/TrafficVisionApp/Views/SettingsView.swift`
+- `ios/TrafficVisionApp/Overlays/TrafficLightOverlay.swift`
+- `ios/TrafficVisionApp/Overlays/CameraFOVOverlay.swift`
+- `ios/TrafficVisionApp/Alerts/AlertViewController.swift`
+
+## UI Performance Targets
+- 60 FPS UI rendering
+- <50ms touch response time
+- Smooth AR overlay updates
+- Battery optimized display
 ```
 
-## Epic 4: macOS Application Development
+## Epic 4: Testing & Validation
 
-### Issue #8: Native macOS Menu Bar App
-**Title:** Develop native macOS menu bar application
-**Labels:** `feature`, `macos`, `ui`
+**Title:** Comprehensive testing with real dashcam video datasets
+**Labels:** `testing`, `validation`, `priority-high`, `dashcam-testing`
 **Description:**
 ```markdown
 ## Overview
-Create native macOS app with menu bar integration for continuous monitoring.
+Create comprehensive test suite using real dashcam MP4 files with embedded GPS data to validate all mobile app functionality.
 
 ## Acceptance Criteria
-- [ ] SwiftUI interface
-- [ ] Menu bar status indicator
-- [ ] Notification Center integration
-- [ ] Accessibility support
-- [ ] Multi-display support
-
-## Tech Stack
-- SwiftUI for UI
-- Combine for reactive programming
-- CoreML for inference
-- Metal for rendering
-```
-
-### Issue #9: Sidecar & Continuity Camera Support
-**Title:** Add support for iPhone as wireless camera via Continuity
-**Labels:** `feature`, `integration`, `ios-interop`
-**Description:**
-```markdown
-## Overview
-Enable iPhone as wireless dashcam using Continuity Camera API.
-
-## Acceptance Criteria
-- [ ] Seamless iPhone camera connection
-- [ ] Support for all iPhone cameras
-- [ ] Low-latency streaming (<50ms)
-- [ ] Automatic failover
-
-## Implementation
-- Use AVCaptureDevice.DiscoverySession
-- Implement Continuity Camera API
-- Add Handoff support
-```
-
-## Epic 5: Testing on M1
-
-### Issue #10: M1-Specific Test Suite
-**Title:** Create comprehensive M1 performance test suite
-**Labels:** `testing`, `performance`, `m1`
-**Description:**
-```markdown
-## Overview
-Build test suite specifically for M1 architecture validation.
-
-## Acceptance Criteria
-- [ ] Neural Engine utilization tests
-- [ ] Memory bandwidth tests
-- [ ] Thermal throttling tests
-- [ ] Battery life benchmarks
-- [ ] Performance per watt metrics
+- [ ] Test dataset of dashcam videos with various scenarios
+- [ ] GPS accuracy validation (within 3 meters)
+- [ ] Traffic light detection accuracy >95%
+- [ ] Camera detection and FOV prediction testing
+- [ ] End-to-end alert system validation
+- [ ] Performance benchmarking on M1 MacBook Pro
+- [ ] Integration testing across all mobile components
 
 ## Test Scenarios
-- Sustained 4K processing
-- Multi-stream processing
-- Background processing
-- Low power mode operation
-```
+- Urban intersections with traffic lights
+- Camera-monitored intersections
+- Various lighting conditions (day/night/dawn/dusk)
+- Weather conditions (rain, fog, bright sun)
+- Different traffic light types and configurations
+- Multiple camera types (red-light, speed, surveillance)
 
-### Issue #11: Universal Binary Support
-**Title:** Build Universal Binary for Intel and Apple Silicon
-**Labels:** `deployment`, `compatibility`
-**Description:**
-```markdown
-## Overview
-Create universal binary supporting both Intel and M1 Macs.
+## Test Data Requirements
+- MP4 files with embedded GPS metadata
+- Known ground truth for traffic light states
+- Verified camera locations and FOV coverage
+- Speed and timing data for validation
+- Various vehicle speeds and approach angles
 
-## Acceptance Criteria
-- [ ] Single binary for both architectures
-- [ ] Automatic architecture detection
-- [ ] Optimized code paths for each
-- [ ] <100MB binary size
+## Validation Metrics
+- GPS tracking accuracy: <3m error
+- Traffic light detection: >95% accuracy
+- State prediction: >90% timing accuracy  
+- Camera detection: >85% accuracy
+- FOV prediction: >80% accuracy
+- End-to-end processing: >30 FPS
 
-## Build Configuration
-- Use xcodebuild with multiple architectures
-- Implement runtime CPU detection
-- Conditional compilation for optimizations
+## Files to Create
+- `tests/test_mobile_integration.py`
+- `tests/dashcam_test_suite.py`
+- `test_data/dashcam_videos/` (directory)
+- `scripts/validate_mobile_app.py`
 ```

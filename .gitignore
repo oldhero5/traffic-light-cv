@@ -172,3 +172,18 @@ $RECYCLE.BIN/
 *~
 .directory
 .Trash-*
+
+# Video Files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+*.webm
+*.mpg
+*.mpeg
+*.m4v
+*.m4a
+*.M4V
+*.MP4 
