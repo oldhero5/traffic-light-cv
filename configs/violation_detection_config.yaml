@@ -1,0 +1,248 @@
+# Enhanced Traffic Violation Detection Configuration
+# Optimized for Apple Silicon M1/M2 MacBook Pro
+
+# Object Detection Configuration
+detection:
+  model_path: "models/traffic_detector.pt"
+  confidence_threshold: 0.7
+  enable_m1_optimizations: true
+  enable_coreml: true
+  batch_processing: true
+  max_batch_size: 32
+
+# Traffic Light Detection Configuration
+traffic_light_detection:
+  confidence_threshold: 0.8
+  enable_temporal_smoothing: true
+  color_profiles:
+    daylight:
+      brightness_threshold: 50
+      saturation_threshold: 120
+    night:
+      brightness_threshold: 25
+      saturation_threshold: 80
+    overcast:
+      brightness_threshold: 35
+      saturation_threshold: 100
+
+# Multi-Object Tracking Configuration
+tracking:
+  max_age: 35
+  min_hits: 3
+  max_distance: 0.7
+  feature_budget: 100
+  enable_m1_optimizations: true
+  min_track_frames: 30
+  tracking_confidence_threshold: 0.6
+
+# Lane Tracking Configuration
+lane_tracking:
+  association_threshold: 0.7
+  max_distance_from_lane: 50.0  # pixels
+  enable_lane_change_detection: true
+
+# Violation Detection Configuration
+violation_detection:
+  confidence_threshold: 0.8
+  violation_buffer_time: 3.0
+  enable_batch_processing: true
+  
+  # Red Light Violation Settings
+  red_light_running:
+    min_confidence: 0.8
+    min_evidence_frames: 5
+    intersection_buffer: 20.0  # pixels
+    min_velocity: 2.0  # pixels/frame
+  
+  # Wrong Way Driving Settings
+  wrong_way_driving:
+    min_confidence: 0.85
+    min_evidence_frames: 10
+    angle_threshold: 135.0  # degrees
+    min_distance: 50.0  # pixels
+  
+  # Speed Violation Settings
+  speed_violation:
+    min_confidence: 0.75
+    speed_buffer_percentage: 0.1  # 10% tolerance
+    min_evidence_frames: 15
+    min_measurement_accuracy: 0.8
+  
+  # Lane Violation Settings
+  lane_violation:
+    min_confidence: 0.7
+    centerline_threshold: 0.8  # fraction of lane width
+    min_evidence_frames: 8
+    consecutive_frame_requirement: 5
+  
+  # Following Too Close Settings
+  following_too_close:
+    min_confidence: 0.75
+    following_distance_threshold: 2.0  # seconds
+    min_evidence_frames: 10
+    speed_threshold: 5.0  # minimum speed for detection
+
+# Real-time Alert System Configuration
+alerts:
+  enabled: true
+  enabled_channels:
+    - console
+    - log_file
+    - display_overlay
+    - database
+  
+  # Alert Filtering
+  min_confidence: 0.8
+  rate_limit_window: 60.0  # seconds
+  max_alerts_per_window: 20
+  cooldown_period: 5.0  # seconds between same-type alerts
+  
+  # Alert Aggregation
+  enable_alert_aggregation: true
+  aggregation_window: 10.0  # seconds
+  enable_spam_protection: true
+  
+  # Priority Mapping
+  priority_mapping:
+    red_light_running: critical
+    wrong_way_driving: emergency
+    speed_violation: high
+    lane_violation: medium
+    following_too_close: medium
+  
+  # Channel Configurations
+  channel_configs:
+    console:
+      enabled: true
+    log_file:
+      enabled: true
+      log_file: "violations.log"
+    display_overlay:
+      enabled: true
+      display_duration: 5.0
+    webhook:
+      enabled: false
+      webhook_url: ""
+      timeout: 5.0
+    audio:
+      enabled: false
+      sound_files:
+        critical: "sounds/critical_alert.wav"
+        high: "sounds/high_alert.wav"
+    database:
+      enabled: true
+      table_name: "violations"
+
+# M1 Performance Configuration
+performance:
+  target_fps: 100.0
+  target_latency_ms: 10.0
+  max_power_watts: 8.0
+  memory_limit_gb: 2.0
+  
+  # Neural Engine Configuration
+  neural_engine:
+    target_utilization: 80.0  # percent
+    enable_quantization: true
+    quantization_precision: "float16"
+    batch_optimization: true
+  
+  # Thermal Management
+  thermal_management:
+    max_temperature: 75.0  # Celsius
+    throttle_temperature: 70.0  # Celsius
+    enable_thermal_scaling: true
+  
+  # Memory Management
+  memory_management:
+    enable_unified_memory: true
+    enable_zero_copy: true
+    memory_pool_size: 10
+    buffer_reuse: true
+
+# Intersection Configuration
+intersection:
+  lanes:
+    - lane_id: 1
+      polygon_points: [[100, 400], [300, 400], [300, 600], [100, 600]]
+      centerline_points: [[200, 400], [200, 600]]
+      direction: "north"
+      width_meters: 3.5
+      associated_lights: [1]
+      speed_limit: 50  # km/h
+      lane_type: "vehicle"
+    
+    - lane_id: 2
+      polygon_points: [[400, 400], [600, 400], [600, 600], [400, 600]]
+      centerline_points: [[500, 400], [500, 600]]
+      direction: "south"  
+      width_meters: 3.5
+      associated_lights: [2]
+      speed_limit: 50  # km/h
+      lane_type: "vehicle"
+    
+    - lane_id: 3
+      polygon_points: [[200, 100], [600, 100], [600, 200], [200, 200]]
+      centerline_points: [[200, 150], [600, 150]]
+      direction: "east"
+      width_meters: 3.5
+      associated_lights: [3]
+      speed_limit: 50  # km/h
+      lane_type: "vehicle"
+    
+    - lane_id: 4
+      polygon_points: [[200, 700], [600, 700], [600, 800], [200, 800]]
+      centerline_points: [[600, 750], [200, 750]]
+      direction: "west"
+      width_meters: 3.5
+      associated_lights: [4]
+      speed_limit: 50  # km/h
+      lane_type: "vehicle"
+  
+  traffic_lights:
+    - light_id: 1
+      associated_lanes: [1]
+      location: [200, 350]
+    - light_id: 2
+      associated_lanes: [2]
+      location: [500, 650]
+    - light_id: 3
+      associated_lanes: [3]
+      location: [650, 150]
+    - light_id: 4
+      associated_lanes: [4]
+      location: [150, 750]
+  
+  intersection_zones:
+    - name: "main_intersection"
+      polygon_points: [[200, 200], [600, 200], [600, 600], [200, 600]]
+      zone_type: "intersection"
+
+# Visualization Configuration
+visualization:
+  enabled: true
+  show_detections: true
+  show_tracks: true
+  show_lanes: true
+  show_violations: true
+  show_alerts: true
+  show_performance_overlay: true
+  
+  # Colors (BGR format)
+  colors:
+    detections: [0, 255, 0]      # Green
+    tracks: [255, 0, 0]          # Blue
+    traffic_lights_red: [0, 0, 255]     # Red
+    traffic_lights_yellow: [0, 255, 255] # Yellow
+    traffic_lights_green: [0, 255, 0]    # Green
+    violations: [0, 0, 255]      # Red
+    alerts: [255, 255, 255]      # White
+    lanes: [128, 128, 128]       # Gray
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  file: "traffic_violations.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

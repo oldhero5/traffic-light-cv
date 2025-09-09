@@ -188,6 +188,169 @@ python run_demo.py --input your_video.mp4 --gps your_gps.csv --display
    - Map visualizations of detected objects will be saved
    - If recording is enabled, an output video will be created
 
+## Object Tracking
+
+The system includes M1-optimized DeepSORT tracking for maintaining object identity across frames.
+
+### Tracking Configuration
+
+Configure tracking in your config file:
+
+```yaml
+# Tracking settings
+tracking:
+  enabled: true
+  tracker_type: "deepsort"  # deepsort, sort, deep_sort_realtime
+  max_distance: 0.2
+  min_confidence: 0.3
+  max_age: 70
+  n_init: 3
+  nms_max_overlap: 1.0
+  max_iou_distance: 0.7
+  
+  # M1 Optimizations
+  use_mps: true              # Metal Performance Shaders
+  use_neural_engine: true    # CoreML Neural Engine
+  batch_similarity: true     # Batch processing for efficiency
+  
+  # Performance targets
+  target_fps: 60             # Minimum FPS requirement
+  max_objects: 100           # Maximum tracked objects
+```
+
+### API Usage
+
+#### Basic Tracking
+
+```python
+from src.tracking.deepsort_tracker import DeepSORTTracker
+from src.detection.detector import Detection
+
+# Initialize tracker
+tracker = DeepSORTTracker(
+    model_path="models/deep_sort.pb",
+    max_distance=0.2,
+    min_confidence=0.3,
+    max_age=70,
+    n_init=3
+)
+
+# Process detections for a frame
+detections = [
+    Detection(
+        class_id=0,
+        class_name="traffic_light",
+        confidence=0.9,
+        bbox=(100, 100, 200, 200)
+    )
+]
+
+# Update tracker and get tracks
+tracks = tracker.update(detections)
+
+for track in tracks:
+    print(f"Track ID: {track.track_id}")
+    print(f"Class: {track.class_name}")
+    print(f"Confidence: {track.confidence:.2f}")
+    print(f"Position: {track.bbox}")
+```
+
+#### M1 Performance Optimizations
+
+```python
+# Enable M1 optimizations
+tracker.enable_m1_optimizations()
+
+# Check Metal Performance Shaders availability
+if tracker.metal_utils.mps_available:
+    print("MPS acceleration enabled")
+
+# Validate performance requirements
+validation = tracker.validate_30_frame_tracking()
+if validation['meets_requirement']:
+    print(f"✅ 30+ frame tracking validated")
+    print(f"Max persistence: {validation['max_persistence']} frames")
+
+# Get FPS estimate
+fps = tracker.get_fps_estimate()
+if fps >= 60:
+    print(f"✅ 60+ FPS requirement met: {fps:.1f} FPS")
+```
+
+#### Deep-Sort-Realtime Compatibility
+
+```python
+# Enable compatibility mode
+tracker.enable_deep_sort_realtime_mode()
+
+# Use realtime-style detections
+realtime_detections = [
+    ([100, 100, 200, 200], 0.9, "traffic_light"),
+    ([300, 150, 400, 250], 0.85, "speed_camera")
+]
+
+tracks = tracker.update_with_realtime(realtime_detections)
+```
+
+#### Advanced Features
+
+```python
+# Calculate tracking confidence
+confidence = tracker._calculate_tracking_confidence(track, detection)
+
+# Memory usage monitoring
+memory_stats = tracker.metal_utils.get_memory_usage()
+print(f"MPS Memory: {memory_stats.get('mps_allocated_mb', 0):.1f} MB")
+
+# Benchmark operations
+benchmark_result = tracker.metal_utils.benchmark_operation(
+    tracker.metal_utils.batch_cosine_similarity,
+    features1, features2,
+    num_iterations=100
+)
+print(f"Mean time: {benchmark_result['mean_time_ms']:.2f} ms")
+print(f"FPS: {benchmark_result['ops_per_second']:.1f}")
+```
+
+### Performance Testing
+
+Test tracking performance with M1 optimizations:
+
+```bash
+# Run performance tests
+python run_tests.py --pytest --performance --m1-only --verbose
+
+# Validate 60+ FPS requirement
+python test_fps_validation.py
+
+# Run memory efficiency tests
+python run_tests.py --pytest -m performance -k memory
+
+# Benchmark tracking operations
+python -m pytest tests/benchmarks/test_deepsort_performance.py --benchmark-only
+```
+
+### M1 Hardware Requirements
+
+The tracking system is optimized for M1 MacBook Pro and requires:
+
+- **Hardware**: M1, M1 Pro, M1 Max, or M1 Ultra
+- **Memory**: 8GB+ unified memory (16GB+ recommended for 4K)
+- **Performance Targets**:
+  - 4K: ≥60 FPS
+  - 1080p: ≥120 FPS
+  - Latency: <100ms end-to-end
+  - Memory: <2GB for 4K processing
+  - Neural Engine: >80% utilization
+
+### Troubleshooting Tracking
+
+- **Low FPS**: Check MPS availability with `torch.backends.mps.is_available()`
+- **Memory issues**: Reduce `max_objects` or enable batch processing
+- **Poor tracking**: Adjust `max_distance` and `min_confidence` thresholds
+- **Track fragmentation**: Increase `max_age` and decrease `n_init`
+- **M1 not detected**: Ensure PyTorch ≥2.1.0 with MPS support
+
 ## Advanced Usage
 
 ### Creating a Custom Detection Model

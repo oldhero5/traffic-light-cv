@@ -1,0 +1,309 @@
+# M1 Performance Profiles for Different Use Cases
+
+# High Performance Profile (M1 Pro/Max/Ultra)
+high_performance:
+  name: "High Performance"
+  description: "Maximum performance for M1 Pro/Max/Ultra with active cooling"
+  
+  target_metrics:
+    fps: 120.0
+    latency_ms: 5.0
+    max_power_watts: 12.0
+    memory_limit_gb: 4.0
+  
+  optimization:
+    batch_size: 64
+    enable_aggressive_quantization: true
+    neural_engine_priority: "performance"
+    thermal_throttling: false
+    power_scaling: false
+  
+  detection:
+    confidence_threshold: 0.6  # Lower for more detections
+    max_batch_size: 64
+    enable_coreml: true
+    quantization: "int8"
+  
+  tracking:
+    max_age: 50
+    min_hits: 2  # Faster track confirmation
+    feature_budget: 200
+  
+  violation_detection:
+    confidence_threshold: 0.7  # Slightly lower for more detections
+    buffer_time: 2.0  # Faster response
+
+# Balanced Profile (M1 Base)
+balanced:
+  name: "Balanced"
+  description: "Balanced performance and efficiency for M1 base model"
+  
+  target_metrics:
+    fps: 100.0
+    latency_ms: 10.0
+    max_power_watts: 8.0
+    memory_limit_gb: 2.0
+  
+  optimization:
+    batch_size: 32
+    enable_aggressive_quantization: false
+    neural_engine_priority: "balanced"
+    thermal_throttling: true
+    power_scaling: true
+  
+  detection:
+    confidence_threshold: 0.7
+    max_batch_size: 32
+    enable_coreml: true
+    quantization: "float16"
+  
+  tracking:
+    max_age: 35
+    min_hits: 3
+    feature_budget: 100
+  
+  violation_detection:
+    confidence_threshold: 0.8
+    buffer_time: 3.0
+
+# Power Efficient Profile
+power_efficient:
+  name: "Power Efficient"
+  description: "Maximum battery life and thermal efficiency"
+  
+  target_metrics:
+    fps: 60.0
+    latency_ms: 15.0
+    max_power_watts: 5.0
+    memory_limit_gb: 1.5
+  
+  optimization:
+    batch_size: 16
+    enable_aggressive_quantization: true
+    neural_engine_priority: "efficiency"
+    thermal_throttling: true
+    power_scaling: true
+    enable_dynamic_scaling: true
+  
+  detection:
+    confidence_threshold: 0.75  # Higher to reduce processing
+    max_batch_size: 16
+    enable_coreml: true
+    quantization: "int8"
+    frame_skip: 2  # Process every other frame
+  
+  tracking:
+    max_age: 25
+    min_hits: 5  # Stricter track confirmation
+    feature_budget: 50
+  
+  violation_detection:
+    confidence_threshold: 0.85  # Higher threshold
+    buffer_time: 5.0  # Longer buffering
+
+# Ultra Low Latency Profile
+ultra_low_latency:
+  name: "Ultra Low Latency"
+  description: "Minimum latency for real-time applications"
+  
+  target_metrics:
+    fps: 100.0
+    latency_ms: 3.0
+    max_power_watts: 15.0  # Higher power allowed
+    memory_limit_gb: 3.0
+  
+  optimization:
+    batch_size: 8  # Smaller batches for lower latency
+    enable_aggressive_quantization: false
+    neural_engine_priority: "latency"
+    thermal_throttling: false
+    power_scaling: false
+    enable_pipeline_parallelism: true
+  
+  detection:
+    confidence_threshold: 0.8
+    max_batch_size: 8
+    enable_coreml: false  # Use PyTorch for lower latency
+    quantization: "float32"
+  
+  tracking:
+    max_age: 20  # Shorter tracks
+    min_hits: 1  # Immediate track creation
+    feature_budget: 150
+  
+  violation_detection:
+    confidence_threshold: 0.8
+    buffer_time: 1.0  # Minimal buffering
+
+# Development Profile
+development:
+  name: "Development"
+  description: "Development and debugging configuration"
+  
+  target_metrics:
+    fps: 30.0
+    latency_ms: 50.0
+    max_power_watts: 6.0
+    memory_limit_gb: 2.0
+  
+  optimization:
+    batch_size: 4
+    enable_aggressive_quantization: false
+    neural_engine_priority: "debug"
+    thermal_throttling: true
+    power_scaling: true
+    enable_profiling: true
+    enable_detailed_logging: true
+  
+  detection:
+    confidence_threshold: 0.5  # Lower for testing
+    max_batch_size: 4
+    enable_coreml: false  # Easier debugging with PyTorch
+    quantization: "float32"
+  
+  tracking:
+    max_age: 50
+    min_hits: 1
+    feature_budget: 200
+  
+  violation_detection:
+    confidence_threshold: 0.5  # Lower for testing
+    buffer_time: 1.0
+  
+  debugging:
+    enable_frame_saving: true
+    save_detection_crops: true
+    enable_performance_profiling: true
+    log_all_violations: true
+
+# Multi-Stream Profile
+multi_stream:
+  name: "Multi-Stream"
+  description: "Optimized for processing multiple camera streams"
+  
+  target_metrics:
+    fps: 80.0  # Per stream
+    latency_ms: 12.0
+    max_power_watts: 10.0
+    memory_limit_gb: 6.0
+    max_concurrent_streams: 4
+  
+  optimization:
+    batch_size: 24  # Optimized for 4 streams × 6 frames
+    enable_aggressive_quantization: true
+    neural_engine_priority: "throughput"
+    thermal_throttling: true
+    power_scaling: true
+    enable_stream_parallelism: true
+  
+  detection:
+    confidence_threshold: 0.75
+    max_batch_size: 24
+    enable_coreml: true
+    quantization: "int8"
+    enable_stream_batching: true
+  
+  tracking:
+    max_age: 30
+    min_hits: 3
+    feature_budget: 75  # Per stream
+    enable_cross_stream_tracking: false
+  
+  violation_detection:
+    confidence_threshold: 0.8
+    buffer_time: 3.0
+    enable_per_stream_processing: true
+
+# Mobile/Edge Profile
+mobile_edge:
+  name: "Mobile/Edge"
+  description: "Optimized for mobile deployment or edge devices"
+  
+  target_metrics:
+    fps: 30.0
+    latency_ms: 20.0
+    max_power_watts: 3.0
+    memory_limit_gb: 1.0
+  
+  optimization:
+    batch_size: 8
+    enable_aggressive_quantization: true
+    neural_engine_priority: "efficiency"
+    thermal_throttling: true
+    power_scaling: true
+    enable_dynamic_scaling: true
+    memory_optimization: "aggressive"
+  
+  detection:
+    confidence_threshold: 0.8
+    max_batch_size: 8
+    enable_coreml: true
+    quantization: "int8"
+    model_compression: true
+    frame_skip: 1
+  
+  tracking:
+    max_age: 20
+    min_hits: 5
+    feature_budget: 30
+    enable_lightweight_features: true
+  
+  violation_detection:
+    confidence_threshold: 0.85
+    buffer_time: 5.0
+    enable_essential_violations_only: true
+
+# Auto Profile Selection Rules
+auto_profile_selection:
+  rules:
+    # Select based on M1 chip variant
+    - condition: "chip_variant == 'M1 Ultra'"
+      profile: "high_performance"
+    
+    - condition: "chip_variant == 'M1 Max'"
+      profile: "high_performance"
+    
+    - condition: "chip_variant == 'M1 Pro'"
+      profile: "balanced"
+    
+    - condition: "chip_variant == 'M1'"
+      profile: "balanced"
+    
+    # Select based on power source
+    - condition: "power_source == 'battery' and battery_level < 30"
+      profile: "power_efficient"
+    
+    - condition: "power_source == 'adapter'"
+      profile: "balanced"
+    
+    # Select based on thermal state
+    - condition: "temperature > 75"
+      profile: "power_efficient"
+    
+    # Select based on memory pressure
+    - condition: "memory_pressure > 0.8"
+      profile: "mobile_edge"
+    
+    # Select based on requested features
+    - condition: "multi_stream_requested"
+      profile: "multi_stream"
+    
+    - condition: "ultra_low_latency_requested"
+      profile: "ultra_low_latency"
+    
+    # Default fallback
+    - condition: "default"
+      profile: "balanced"
+
+# Profile switching thresholds
+dynamic_switching:
+  enabled: true
+  switching_cooldown: 30.0  # seconds
+  
+  thresholds:
+    temperature_high: 75.0  # Switch to power_efficient
+    temperature_critical: 80.0  # Emergency throttling
+    battery_low: 20.0  # Switch to power_efficient
+    memory_high: 0.8  # Switch to mobile_edge
+    fps_low: 0.8  # Switch to higher performance if possible
+    latency_high: 1.5  # Switch to lower latency if possible

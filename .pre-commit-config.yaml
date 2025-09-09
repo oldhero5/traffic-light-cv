@@ -1,0 +1,198 @@
+# .pre-commit-config.yaml
+default_language_version:
+  python: python3.11
+  node: 18.17.0
+
+default_stages: [pre-commit]
+
+repos:
+  # ==================== SECURITY ====================
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package-lock\.json$|yarn\.lock$|\.yarn/|pnpm-lock\.yaml$
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: ['-ll', '--skip', 'B101,B601']
+        files: \.py$
+        exclude: tests/
+
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.63.2
+    hooks:
+      - id: trufflehog
+        entry: trufflehog filesystem --no-update
+        pass_filenames: false
+
+  # ==================== PYTHON ====================
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.11
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: 
+          - types-requests
+          - types-PyYAML
+          - types-python-dateutil
+          - numpy
+          - torch
+        args: [--strict, --ignore-missing-imports, --python-version=3.11]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args: [--py311-plus]
+
+  # ==================== COMMIT MESSAGE ====================
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.13.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # ==================== GENERAL ====================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+        exclude: \.(mlmodel|onnx|pt|pth|h5|pb)$
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+        args: ['--remove']
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: name-tests-test
+        args: ['--pytest-test-first']
+      - id: no-commit-to-branch
+        args: ['--branch', 'main', '--branch', 'master']
+      - id: pretty-format-json
+        args: ['--autofix', '--indent=2']
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+
+  # ==================== DOCUMENTATION ====================
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix']
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        args: [-c=.yamllint]
+
+  # ==================== DOCKER ====================
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: ['--ignore', 'DL3008', '--ignore', 'DL3009']
+
+  # ==================== SHELL ====================
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        args: ['--severity=warning']
+
+  # ==================== LICENSE ====================
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: insert-license
+        files: \.py$
+        args:
+          - --license-filepath
+          - LICENSE_HEADER.txt
+          - --comment-style
+          - "#"
+
+  # ==================== CUSTOM M1 CHECKS ====================
+  - repo: local
+    hooks:
+      - id: check-issue-reference
+        name: Check issue reference in branch
+        entry: python scripts/hooks/check_issue_reference.py
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: check-m1-compatibility
+        name: Check M1 compatibility
+        entry: python scripts/hooks/check_m1_compatibility.py
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: check-model-size
+        name: Check model size for mobile
+        entry: python scripts/hooks/check_model_size.py
+        language: python
+        pass_filenames: false
+        files: \.(mlmodel|onnx|pt|pth)$
+
+      - id: validate-performance
+        name: Validate performance metrics
+        entry: python scripts/hooks/validate_performance.py
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: check-test-coverage
+        name: Check test coverage
+        entry: python scripts/hooks/check_coverage.py
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: validate-dependencies
+        name: Validate dependencies with uv
+        entry: bash -c 'uv pip check'
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-todo-format
+        name: Check TODO format
+        entry: python scripts/hooks/check_todo_format.py
+        language: python
+        types: [python]
+
+ci:
+  autofix_prs: true
+  autofix_commit_msg: 'style: auto-fix pre-commit hooks [skip ci]'
+  autoupdate_schedule: weekly
+  autoupdate_commit_msg: 'chore: update pre-commit hooks'
+  skip: [check-m1-compatibility, validate-performance]  # Skip M1-specific in CI
